@@ -8,7 +8,7 @@ root = ctk.CTk()
 # general settings
 ctk.set_default_color_theme('dark-blue')
 ctk.set_appearance_mode('dark')
-root.geometry("500x200")
+root.geometry("300x200")
 root.title("listy")
 
 # classess
@@ -31,22 +31,31 @@ class checky(ctk.CTkCheckBox):
         self.command = checkbox_event
         self.on_value = "on"
         self.off_value = "off"
-
-# datasets temp
-tasks = ["task 1","task 2","task 3","task 4"]
+# temp data set
+tasks = ["task 1", "task 2", "task 3"]
 # instances list TODO: save this so you dont have to recreate each item
 instances = {}
-for task in tasks:
-    name = f'object_{task}'
-    # instance = ctk.CTkFrame(master=root, height=10, width=150, fg_color = ("#ffffff", "#363636"))
-    # instance.pack_configure(side='top', fill='y', pady=1)
+def destructo(name):
+    instances[name].destroy() 
+def plant_destroy_button(name):
+    destroy_button = ctk.CTkButton(master=instances[name], height=30, width=30, text=name, fg_color=("#ffffff", "#424242"), hover_color='red', command=lambda:destructo(name))
+    destroy_button.pack_configure(side="right")
+
+for i in range(len(tasks)):
+    name = f'task_{i+1}'
+    # remeber instances[name] is always equal to the last task in the list]
     instances[name] = ctk.CTkFrame(master=root, height=30, width=250, fg_color = ("#ffffff", "#363636"))
     instances[name].pack_propagate(False)
     instances[name].pack_configure(side='top', pady=1)
+    
     # create check box in frame
-    checkbox = ctk.CTkCheckBox(master=instances[name])
+    checkbox = ctk.CTkCheckBox(master=instances[name], text=name)
     checkbox.pack_configure(side="left")
+    plant_destroy_button(name)
 
+root.mainloop()
+
+# TODO:
 # experimetnal (commented out may need later)
 """
 # frame1 = ctk.CTkFrame(master=root, height=10, width=150, fg_color=("#ffffff", "#363636"))
@@ -61,10 +70,6 @@ for task in tasks:
 # checkbox = ctk.CTkCheckBox(frame, text="CTkCheckBox", )
 # checkbox.pack_configure(side = 'top')
 """
-
-
-root.mainloop()
-# TODO:
 """
 what is the problem
     i need a check box to appear with a variable
@@ -72,5 +77,4 @@ what is the problem
     i need the check box inside of a frame
     i need need to be able to create as many as i want
 """
-
         
