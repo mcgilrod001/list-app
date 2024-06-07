@@ -30,7 +30,7 @@ def destructo(name):
 
 def plant_destroy_button(name):
     destroy_button = ctk.CTkButton(master=instances[name], height=30, width=30, text="x", font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red', command=lambda:destructo(name))
-    destroy_button.pack_configure(side="right")
+    destroy_button.pack_configure(side="right", padx=1, pady=1)
 
 
 main_frame =  ScrollableFrame(master=root, width=300, height=500, corner_radius=0, fg_color="transparent")
@@ -50,12 +50,40 @@ def list_packer():
         already_packed.append(name)
 list_packer()
 
+def add_task_contstructor():
+    # new task box/button
+    global add_task_frame
+    add_task_frame = ctk.CTkFrame(master=main_frame, height=30, width=250, fg_color=("#ffffff", "#363636"))
+    add_task_frame.pack_propagate(False)
+    add_task_frame.pack_configure(side="top",pady=1)
+
+    global task_entry
+    task_entry = ctk.CTkEntry(master=add_task_frame, placeholder_text="Add Task", border_color='#363636')
+    task_entry.pack_configure(side='left', pady=1, fill='both', expand=True)
+
+    global submit_button
+    submit_button = ctk.CTkButton(master=add_task_frame, height=30, width=30, text="", font=("roboto", 20), command=lambda: task_entry.get()) #send to the list packer
+    submit_button.pack_configure(side='right', padx=1, pady= 1)
+
+add_task_contstructor()
+
+def add_task_destroyer():
+    global add_task_frame
+    global task_entry
+    global submit_button
+    add_task_frame.destroy()
+    task_entry.destroy()
+    submit_button.destroy()
+
+
 # testing for fucntion incase something changes and for whatever reason there are less tasks on the screen then there should be or one is added after packing.
-print(list(instances.keys()))
-print(already_packed)
-already_packed.pop()
+# print(list(instances.keys()))
+# print(already_packed)
+# already_packed.pop()
+
+# tests if what has been packed matches what needs to be packed
 if already_packed == list(instances.keys()):
-    print("True")
+    pass
 else:
     # find what is different
     for i in range (len(list(instances.keys()))):
@@ -65,10 +93,15 @@ else:
             print(f'origonal key:{list(instances.keys())[i]} already packed key:{already_packed[i]}')
         except IndexError:
             print("o fuk")
-            
+        # destroy them all then replace them
+    
             
 root.mainloop()
-
+"""
+# TODO create a function that destroyes all the packed items, if there is an order error or if some are missing, and then repacks them correctly, should aslo destroy
+the add task frame so it can be placed again at the bottom, should recreate all the frames/tasks in correct order including tasks that were added with add task box 
+"""
+# TODO add a delete when completed function
 # TODO be able to add tasks
 # TODO:
 # experimetnal (commented out may need later)
