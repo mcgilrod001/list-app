@@ -62,6 +62,9 @@ def pack_from_entry():
     # task_isInstance_check()          
     """
     # destroy everything
+    destroy_all()
+    global instances
+    task_packer()
 def destroy_all():
     global instances
     for instance in instances:
@@ -91,7 +94,7 @@ def add_task_contstructor():
     global add_task_frame
     add_task_frame = ctk.CTkFrame(master=main_frame, height=30, width=250, fg_color=("#ffffff", "#363636"))
     add_task_frame.pack_propagate(False)
-    add_task_frame.pack_configure(side="top",pady=1)
+    add_task_frame.pack_configure(side="bottom",pady=1)
 
     global task_add_containter
     task_add_containter = ctk.CTkEntry(master=add_task_frame, placeholder_text="Add Task", border_color='#363636')
