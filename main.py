@@ -21,34 +21,70 @@ class ScrollableFrame(ctk.CTkScrollableFrame):
         self.lable.pack_configure(side="top", pady= 10)
 
 # temp data set
-tasks = ["task 1", "task 2", "task 3"]
+tasks = ['1', 'task', '3'] #should never be empty
 # instances list TODO: save this so you dont have to recreate each item
 instances = {}
-already_packed = []
+# already_packed = [] # proboly dont need, just compare instace keys, with tasks if they dont match, either delete everything and repack everything, or  only repack what is needed.
 def destructo(name):
-    instances[name].destroy() 
+    instances[name].destroy()
+     
 
 def plant_destroy_button(name):
     destroy_button = ctk.CTkButton(master=instances[name], height=30, width=30, text="x", font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red', command=lambda:destructo(name))
     destroy_button.pack_configure(side="right", padx=1, pady=1)
+    # TODO add perminant delete funciton so it removes the item from tasks list
 
-
+# main frame
 main_frame =  ScrollableFrame(master=root, width=300, height=500, corner_radius=0, fg_color="transparent")
 main_frame.pack(fill='both', expand=True)
-def list_packer():
-    for i in range(len(tasks)):
-        name = f'task_{i+1}'
+
+def task_packer():
+    for task in tasks:
+        name = f'{task.replace(" ", "_")}'
         # remeber instances[name] is always equal to the last task in the list]
         instances[name] = ctk.CTkFrame(master=main_frame, height=30, width=250, fg_color=("#ffffff", "#363636"))
         instances[name].pack_propagate(False)
         instances[name].pack_configure(side='top', pady=1)
         
         # create check box in frame
-        checkbox = ctk.CTkCheckBox(master=instances[name], text=name)
+        checkbox = ctk.CTkCheckBox(master=instances[name], text=task) # make sure name is set to the text entry
         checkbox.pack_configure(side="left")
         plant_destroy_button(name)
-        already_packed.append(name)
-list_packer()
+        # already_packed.append(name)
+task_packer()
+def pack_from_entry():
+    """
+    # def task_isInstance_check():
+        # if tasks == list(instances.keys()):
+        #     print("there are no new tasks") # i cant think of a single situation where this should unless they enter a blank string or one that already exists
+        # else:
+        #     print(f'intances list: {list(instances.keys())} \n task list: {tasks}')
+    # task_isInstance_check()          
+    """
+    # destroy everything
+def destroy_all():
+    global instances
+    for instance in instances:
+        print(instance)
+        destructo(instance)
+    instances = {}
+
+# destroys everything
+destroy_everything_button = ctk.CTkButton(master=main_frame,command=destroy_all) 
+destroy_everything_button.pack_configure(side='bottom')
+
+def add_task_to_tasks(task_name):
+    def check_for_blanks(task_name):
+        return all(char == ' ' for char in task_name)
+    if  check_for_blanks(task_name):
+        print("string is emty")
+    elif task_name in tasks: 
+        print("task already in task")
+    else: #should only pass this check if it isnt already in tasks and isnt blank.
+        tasks.append(task_name)
+        # print(tasks)
+        pack_from_entry()
+
 
 def add_task_contstructor():
     # new task box/button
@@ -57,22 +93,22 @@ def add_task_contstructor():
     add_task_frame.pack_propagate(False)
     add_task_frame.pack_configure(side="top",pady=1)
 
-    global task_entry
-    task_entry = ctk.CTkEntry(master=add_task_frame, placeholder_text="Add Task", border_color='#363636')
-    task_entry.pack_configure(side='left', pady=1, fill='both', expand=True)
+    global task_add_containter
+    task_add_containter = ctk.CTkEntry(master=add_task_frame, placeholder_text="Add Task", border_color='#363636')
+    task_add_containter.pack_configure(side='left', pady=1, fill='both', expand=True)
 
     global submit_button
-    submit_button = ctk.CTkButton(master=add_task_frame, height=30, width=30, text="", font=("roboto", 20), command=lambda: task_entry.get()) #send to the list packer
+    submit_button = ctk.CTkButton(master=add_task_frame, height=30, width=30, text="", font=("roboto", 20), command=lambda: add_task_to_tasks(task_add_containter.get())) #send to the list packer
     submit_button.pack_configure(side='right', padx=1, pady= 1)
 
 add_task_contstructor()
 
 def add_task_destroyer():
     global add_task_frame
-    global task_entry
+    global task_add_containter
     global submit_button
     add_task_frame.destroy()
-    task_entry.destroy()
+    task_add_containter.destroy()
     submit_button.destroy()
 
 
@@ -82,19 +118,21 @@ def add_task_destroyer():
 # already_packed.pop()
 
 # tests if what has been packed matches what needs to be packed
-if already_packed == list(instances.keys()):
+"""
+if tasks == list(instances.keys()):
     pass
 else:
     # find what is different
     for i in range (len(list(instances.keys()))):
         try:
-            if i >= len(already_packed):
+            if i >= len(tasks):
                 already_packed.append("")
             print(f'origonal key:{list(instances.keys())[i]} already packed key:{already_packed[i]}')
         except IndexError:
             print("o fuk")
         # destroy them all then replace them
-    
+    # pack any
+"""
             
 root.mainloop()
 """
@@ -125,4 +163,18 @@ what is the problem
     i need the check box inside of a frame
     i need need to be able to create as many as i want
 """
+"""
+    for i in range(len(tasks)):
+        name = f'{task_name.replace(" ","_")}'
+        # remeber instances[name] is always equal to the last task in the list]
+        instances[name] = ctk.CTkFrame(master=main_frame, height=30, width=250, fg_color=("#ffffff", "#363636"))
+        instances[name].pack_propagate(False)
+        instances[name].pack_configure(side='top', pady=1)
         
+        # create check box in frame
+        checkbox = ctk.CTkCheckBox(master=instances[name], text=name) # make sure name is set to the text entry
+        checkbox.pack_configure(side="left")
+        plant_destroy_button(name)
+        # already_packed.append(name)
+        
+""" 
