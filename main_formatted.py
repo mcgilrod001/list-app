@@ -7,8 +7,8 @@ class ScrollableFrame(ctk.CTkScrollableFrame):
         super().__init__(master, **kwargs)
         
         # add widgets
-        self.lable = ctk.CTkLabel(self, text="list", font=("roboto", 20))
-        self.lable.pack_configure(side="top", pady= 10)
+        self.label = ctk.CTkLabel(self, text="list", font=("roboto", 20))
+        self.label.pack_configure(side="top", pady= 10)
 
 # destroys and wipes task
 def destroy_single(name): #removes task
