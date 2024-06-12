@@ -142,6 +142,8 @@ Root.mainloop()
  
 # TODO add ability to save task list to file, or some other form of saving method
 
+# TODO add error reporting to app, so the user knows what is going wrong
+
 # dev comments remove in prod
 """
 what is the problem

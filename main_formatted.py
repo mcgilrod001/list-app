@@ -140,6 +140,8 @@ Root.mainloop()
 
 # TODO add bottom/side bar (may be collapsable/animated) this is for the light and dark mode function as well as saving, i like bottom bar idea.
 
+# TODO add error reporting to app, so the user knows what is going wrong
+
 # dev comments remove in prod
 """
 what is the problem
