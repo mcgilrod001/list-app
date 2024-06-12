@@ -5,13 +5,14 @@ import tkinter
 # root setup
 root = ctk.CTk()
 
-# general settings
+# general config
+# TODO: add dark and light mode
 ctk.set_default_color_theme('dark-blue')
 ctk.set_appearance_mode('dark')
 root.geometry("300x200")
 root.title("listy")
 
-# classess
+# class for scrollable expanding scroll frame and head label
 class ScrollableFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -20,17 +21,30 @@ class ScrollableFrame(ctk.CTkScrollableFrame):
         self.lable = ctk.CTkLabel(self, text="list", font=("roboto", 20))
         self.lable.pack_configure(side="top", pady= 10)
 
-# temp data set
+# TODO: save this so you dont have to recreate each item
 tasks = ['1', 'task', '3'] #should never be empty
-# instances list TODO: save this so you dont have to recreate each item
+# instances list 
 instances = {}
-# already_packed = [] # proboly dont need, just compare instace keys, with tasks if they dont match, either delete everything and repack everything, or  only repack what is needed.
-def destructo(name):
-    instances[name].destroy()
-     
+task_instance_pairing = {} 
 
-def plant_destroy_button(name):
-    destroy_button = ctk.CTkButton(master=instances[name], height=30, width=30, text="x", font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red', command=lambda:destructo(name))
+# destroys and wipes task
+def destroy_single(name): #removes task
+    instances[name].destroy()
+    tasks.remove(task_instance_pairing[name])
+
+"""
+TODO: fix edge case of user putting in a task with an undescore, with the same name as one with a space
+    EX: task_3, task 3
+    this tries to force the instances dict, to create two identical keys, which is not allowed in python
+"""
+
+# destroys an instance
+def destroy_instance(name): #keeps task
+    instances[name].destroy()
+
+# places destroy button in individual task frames
+def place_destroy_button(name):
+    destroy_button = ctk.CTkButton(master=instances[name], height=30, width=30, text="x", font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red', command=lambda:destroy_single(name))
     destroy_button.pack_configure(side="right", padx=1, pady=1)
     # TODO add perminant delete funciton so it removes the item from tasks list
 
@@ -38,9 +52,13 @@ def plant_destroy_button(name):
 main_frame =  ScrollableFrame(master=root, width=300, height=500, corner_radius=0, fg_color="transparent")
 main_frame.pack(fill='both', expand=True)
 
+# places tasks from task list
 def task_packer():
+    # formats name, pairs instance name with task name, assigns frame to intances[name]
+    # sets that frame to not propogate so it dosnt shrink or expand, packs it, packs the checkbox and desctruction button
     for task in tasks:
         name = f'{task.replace(" ", "_")}'
+        task_instance_pairing[name] = task
         # remeber instances[name] is always equal to the last task in the list]
         instances[name] = ctk.CTkFrame(master=main_frame, height=30, width=250, fg_color=("#ffffff", "#363636"))
         instances[name].pack_propagate(False)
@@ -49,33 +67,34 @@ def task_packer():
         # create check box in frame
         checkbox = ctk.CTkCheckBox(master=instances[name], text=task) # make sure name is set to the text entry
         checkbox.pack_configure(side="left")
-        plant_destroy_button(name)
-        # already_packed.append(name)
+        place_destroy_button(name)
+
 task_packer()
+
+# destroys then repacks everything with the updated task list
 def pack_from_entry():
-    """
-    # def task_isInstance_check():
-        # if tasks == list(instances.keys()):
-        #     print("there are no new tasks") # i cant think of a single situation where this should unless they enter a blank string or one that already exists
-        # else:
-        #     print(f'intances list: {list(instances.keys())} \n task list: {tasks}')
-    # task_isInstance_check()          
-    """
-    # destroy everything
-    destroy_all()
+    # destroy everything for repack
+    destroy_instances()
     global instances
+    # repack
     task_packer()
-def destroy_all():
+
+# destroys instances for repacking
+def destroy_instances():
     global instances
     for instance in instances:
         print(instance)
-        destructo(instance)
+        destroy_instance(instance)
     instances = {}
 
-# destroys everything
-destroy_everything_button = ctk.CTkButton(master=main_frame,command=destroy_all) 
-destroy_everything_button.pack_configure(side='bottom')
-
+# a button that destroyes everything
+def destroy_all():
+    global instances
+    for name in instances:
+        destroy_single(f'{name}')
+destroy_button = ctk.CTkButton(master=main_frame, text='Delete All tasks', font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red',command=lambda:destroy_all())
+destroy_button.pack_configure(side='bottom', pady=5)
+# add tasks to task list and calls repack function
 def add_task_to_tasks(task_name):
     def check_for_blanks(task_name):
         return all(char == ' ' for char in task_name)
