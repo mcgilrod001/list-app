@@ -23,7 +23,6 @@ class ScrollableFrame(ctk.CTkScrollableFrame):
         self.label = ctk.CTkLabel(self, text="list", font=("roboto", 20))
         self.label.pack_configure(side="top", pady= 10)
 
-
 # task list
 tasks = ['1', 'task', '3'] 
 
