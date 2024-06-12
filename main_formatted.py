@@ -1,18 +1,5 @@
-# NOTE this is the unformatted file, funcitons are orrigonally defined where i defined them and wherever they work, the formated final is functional but 
-# the formatted file may change because of the addition of new funcitons, that may redetermine the order or position of some funcitons.
-
 # imports
 import customtkinter as ctk
-import tkinter
-
-# root setup
-Root = ctk.CTk()
-
-# general config
-ctk.set_default_color_theme('dark-blue')
-ctk.set_appearance_mode('dark')
-Root.geometry("300x200")
-Root.title("listy")
 
 # class for scrollable expanding scroll frame and head label
 class ScrollableFrame(ctk.CTkScrollableFrame):
@@ -23,20 +10,10 @@ class ScrollableFrame(ctk.CTkScrollableFrame):
         self.lable = ctk.CTkLabel(self, text="list", font=("roboto", 20))
         self.lable.pack_configure(side="top", pady= 10)
 
-# task list
-tasks = ['1', 'task', '3'] 
-
-# instances dict
-instances = {}
-
-# dict with pairs of task names as keys and corresponding instance names
-task_instance_pairing = {} 
-
 # destroys and wipes task
 def destroy_single(name): #removes task
     instances[name].destroy()
     tasks.remove(task_instance_pairing[name])
-
 
 # destroys an instance
 def destroy_instance(name): #keeps task
@@ -46,10 +23,6 @@ def destroy_instance(name): #keeps task
 def place_destroy_button(name):
     destroy_button = ctk.CTkButton(master=instances[name], height=30, width=30, text="x", font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red', command=lambda:destroy_single(name))
     destroy_button.pack_configure(side="right", padx=1, pady=1)
-
-# main frame
-main_frame =  ScrollableFrame(master=Root, width=300, height=500, corner_radius=0, fg_color="transparent")
-main_frame.pack(fill='both', expand=True)
 
 # places tasks from task list
 def task_packer():
@@ -73,8 +46,6 @@ def task_packer():
         # places delete button
         place_destroy_button(name)
 
-task_packer()
-
 # destroys then repacks everything with the updated task list
 def pack_from_entry():
     # destroy everything for repack
@@ -95,10 +66,6 @@ def destroy_all():
     global instances
     for instance in instances:
         destroy_single(f'{instance}')
-        
-# button to destroy all tasks
-delete_all_button = ctk.CTkButton(master=main_frame, text='Delete All tasks', font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red',command=lambda:destroy_all())
-delete_all_button.pack_configure(side='bottom', pady=5)
 
 # add tasks to task list and calls repack function
 def add_task_to_tasks(task_name):
@@ -128,6 +95,35 @@ def new_task_container():
     submit_button = ctk.CTkButton(master=new_task_frame, height=30, width=30, text="", font=("roboto", 20), command=lambda: add_task_to_tasks(task_input.get())) #send to the list packer
     submit_button.pack_configure(side='right', padx=1, pady= 1)
 
+
+# root setup
+Root = ctk.CTk()
+
+# general config
+ctk.set_default_color_theme('dark-blue')
+ctk.set_appearance_mode('dark')
+Root.geometry("300x200")
+Root.title("listy")
+
+# task list
+tasks = ['1', 'task', '3'] 
+
+# instances dict
+instances = {}
+
+# a dict whith the names set as the task names, and the values of those names set as the corresponding instance name.
+task_instance_pairing = {} 
+
+# main frame
+main_frame =  ScrollableFrame(master=Root, width=300, height=500, corner_radius=0, fg_color="transparent")
+main_frame.pack(fill='both', expand=True)
+
+task_packer()
+
+# button to destroy all tasks
+delete_all_button = ctk.CTkButton(master=main_frame, text='Delete All tasks', font=("roboto", 20), fg_color=("#ffffff", "#424242"), hover_color='red',command=lambda:destroy_all())
+delete_all_button.pack_configure(side='bottom', pady=5)
+
 new_task_container()
 
 Root.mainloop()
@@ -141,6 +137,8 @@ Root.mainloop()
 # TODO add a delete when completed function
  
 # TODO add ability to save task list to file, or some other form of saving method
+
+# TODO add bottom/side bar (may be collapsable/animated) this is for the light and dark mode function as well as saving, i like bottom bar idea.
 
 # dev comments remove in prod
 """
